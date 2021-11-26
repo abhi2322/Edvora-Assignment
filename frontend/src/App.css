@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;400&display=swap');
+
+*{
+    margin:0;
+    top:0;
+    font-family: 'Manrope';
+}
+::placeholder{
+    color:#82869A80;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.LoginForm{
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+
+.InputField{
+    display: flex;
+    width: 50%;
+    padding:87px;
+    flex-direction: column;
+}
+
+.showCase{
+    width: 50%;
+    background: #272B3F;
+    padding: 87px;
+}
+
+.formTitle{
+    font-size: 40px;
+    font-weight: 900;
+}
+.formSubTitle{
+    font-size: 16px;
+    font-weight: 300;
+    color:#282C4099;
+    margin-top:15px;
+    margin-bottom: 15px;
+    text-decoration: none;
+}
+label{
+    font-weight: 500;
+    font-size:12px;
+    margin-top:11px;
+    margin-bottom:11px;
+    color:#82869A;
+}
+
+input{
+    outline: none;
+    border-width: 0px 0px 2px 0px;
+    border-color:#EBEBEB;
+    margin-bottom:11px;
+}
+
+.btnLogin{
+    background: linear-gradient(180deg, #7BB4F8 0%, #73AAEB 100%);
+    border-radius: 10px;
+    height: 55px;
+    margin-top:30px;
+    color:white;
+    border:0;
+    cursor: pointer;
+
+}
+
+.showCaseTitle{
+    font-weight: 900;
+    font-size: 36px;
+    color:white;
+}
+
+.showCaseSubTitle{
+    font-size: 16px;
+    font-weight: 400;
+    color: rgba(130, 134, 154, 0.8)
+    ;
+}
+
+.pokeLogo{
+    max-width: 500px;
+    margin-left: 30px;
+}
+
+.signUp{
+   padding-bottom: 0px !important;
+}
+
+.ErrorBox{
+    padding: 1rem;
+    border :0.1rem solid transparent;
+    border-radius:0.5rem;
+    color:#a02020;
+    background-color:#ffe0e0e0;
+}
