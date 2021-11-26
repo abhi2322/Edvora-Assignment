@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import {Link} from 'react-router-dom';
+import {Link,useNavigate } from 'react-router-dom';
 import pokeLogo from '../Assets/pokmonLogo.png';
 import ErrorBox from '../components/ErrorBox';
+import axios from 'axios';
 
-function SignupScreen() {
-    
+function SignupScreen(props) {
+    const navigate = useNavigate();
     const[firstName,setFirstName]=useState("")
     const[lastName,setLastName]=useState("")
     const[email,setEmail]=useState("")
@@ -23,6 +24,22 @@ function SignupScreen() {
              setError("Both the passwords dont match")
              return;
          }
+         if(!(email&&password&&firstName&&lastName)){
+            setError("Enter all input fields")
+            return;
+         }
+        const payload={first_name:firstName,last_name:lastName,email:email,password:password}
+         axios.post('/api/register',payload)
+         .then(response=>{
+            if (response.status >= 200 && response.status < 300) {
+                navigate('/home')
+             }
+         })
+         .catch(err=>{
+             console.log(error)
+         })
+
+
     }
     return (
         <div className="LoginForm " onSubmit={LoginHandler}>

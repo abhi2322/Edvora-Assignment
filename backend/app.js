@@ -17,7 +17,7 @@ app.post("/welcome", auth, (req, res) => {
 });
 
 //For user registration
-app.post('/register',async(req,res)=>{
+app.post('/api/register',async(req,res)=>{
     try {
         const {first_name,last_name,email,password}=req.body;
         //checking user input
@@ -52,12 +52,13 @@ app.post('/register',async(req,res)=>{
           res.status(201).json(user);
     }catch(err){
         console.log(err);
+        res.status(400).send("Cant register");
     }
 
 });
 
 //For user Login
-app.post('/login',async(req,res)=>{
+app.post('/api/login',async(req,res)=>{
     try {
         const { email, password } = req.body;
         if (!(email && password)) {
@@ -81,6 +82,7 @@ app.post('/login',async(req,res)=>{
         }
       } catch (err) {
         console.log(err);
+        res.status(400).send("Invalid Credentials");
       }
 
 });
