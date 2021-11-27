@@ -52,7 +52,6 @@ app.post('/api/register',async(req,res)=>{
           res.status(201).json(user);
     }catch(err){
         console.log(err);
-        res.status(400).send("Cant register");
     }
 
 });
@@ -63,6 +62,7 @@ app.post('/api/login',async(req,res)=>{
         const { email, password } = req.body;
         if (!(email && password)) {
           res.status(400).send("All input is required");
+          return;
         }
         // check if user exist in our database
         const user = await User.findOne({ email });
@@ -82,7 +82,6 @@ app.post('/api/login',async(req,res)=>{
         }
       } catch (err) {
         console.log(err);
-        res.status(400).send("Invalid Credentials");
       }
 
 });

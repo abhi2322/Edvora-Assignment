@@ -13,7 +13,7 @@ function SignupScreen(props) {
     const[repassword,setRePassword]=useState("")
     const[error,setError]=useState("")
 
-    const LoginHandler=(event)=>{
+    const SignUpHandler=(event)=>{
         event.preventDefault();
         if (!(password.match(/^(?=[^A-Z]*[A-Z])(?=[^!"#$%&'()*+,-.:;<=>?@[\]^_`{|}~]*[!"#$%&'()*+,-.:;<=>?@[\]^_`{|}~])(?=\D*\d).{8,}$/))) {
             setError("The password must include uppercase and lowercase letters numbers and symbols and must have atleat 8 characters");
@@ -31,18 +31,22 @@ function SignupScreen(props) {
         const payload={first_name:firstName,last_name:lastName,email:email,password:password}
          axios.post('/api/register',payload)
          .then(response=>{
-            if (response.status >= 200 && response.status < 300) {
-                navigate('/home')
-             }
+                if(response.status===201){
+                    localStorage.setItem('user',JSON.stringify(response.data));
+                    navigate('/home');
+                }
          })
          .catch(err=>{
-             console.log(error)
+             console.log(err)
+             if(err.response.status===409){
+                setError("User Already Exist. Please Login")
+            }
          })
 
 
     }
     return (
-        <div className="LoginForm " onSubmit={LoginHandler}>
+        <div className="LoginForm " onSubmit={SignUpHandler}>
             <form className="InputField signUp">
                 <p className="formTitle">Sign Up</p>
                 <Link className="formSubTitle" to="/">Already have an account?</Link>
@@ -57,7 +61,7 @@ function SignupScreen(props) {
                 <input type="text" value={password} placeholder="Enter Your Password" onChange={(event)=>{setPassword(event.target.value);setError("")}}/>
                 <label>Repeat Password</label>
                 <input type="text" value={repassword} placeholder="Enter Your Password Again" onChange={(event)=>{setRePassword(event.target.value);setError("")}}/>
-                <input type="submit"  value="Login" className="btnLogin"/>
+                <input type="submit"  value="Sign Up" className="btnLogin"/>
             </form>
             <div className="showCase">
             <p className="showCaseTitle">Pokemon Storage- </p>

@@ -1,9 +1,10 @@
 import React from 'react';
 
 function HomeScreen() {
+    const data= JSON.parse(localStorage.getItem('user'));
     return (
         <div>
-            Hello world
+            {data.first_name}
         </div>
     )
 };

@@ -1,17 +1,39 @@
 import React, { useState } from 'react'
 import pokeLogo from '../Assets/pokmonLogo.png'
-import {Link} from 'react-router-dom';
+import {Link,useNavigate} from 'react-router-dom';
+import ErrorBox from '../components/ErrorBox';
+import axios from 'axios';
 function LoginScreen() {
+    const navigate = useNavigate();
     const[email,setEmail]=useState("")
     const[password,setPassword]=useState("")
+    const[error,setError]=useState("")
     const LoginHandler=(event)=>{
-        console.log(email,password)
         event.preventDefault();
+        if(!(email&&password)){
+            setError("Enter all input fields")
+            return;
+         }
+         const payload={email:email,password:password}
+         axios.post('/api/login',payload)
+         .then(response=>{
+                if(response.status===200){
+                    localStorage.setItem('user',JSON.stringify(response.data));
+                    navigate('/home');
+                }
+         })
+         .catch(err=>{
+             console.log(err)
+             if(err.response.status===400){
+                setError("Invalid credentials")
+            }
+         })
     }
     return (
         <div className="LoginForm" onSubmit={LoginHandler}>
             <form className="InputField">
                 <p className="formTitle">Login</p>
+                {error!==""?<ErrorBox errorMessage={error}></ErrorBox>:null}
                 <Link className="formSubTitle" to="/signup">Don't have an account?</Link>
                 <label>Your Email</label>
                 <input type="text" value={email} placeholder="Enter Your Email" onChange={(event)=>{setEmail(event.target.value)}}/>
