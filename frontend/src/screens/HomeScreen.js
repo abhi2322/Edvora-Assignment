@@ -1,42 +1,98 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ErrorBox from '../components/ErrorBox';
+import plusLogo from '../Assets/plusLogo.png';
+import FavpokeCard from '../components/FavpokeCard';
+import NavBar from '../components/NavBar';
+import{useParams} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 function HomeScreen() {
-    const data= JSON.parse(localStorage.getItem('user'));
     const [favPokemon,setFavPokemon]=useState([]);
     const [user,setUser]=useState();
     const[poke,setPoke]=useState("");
     const[error,setError]=useState("");
-    const[pokeVal,setPokeVal]=useState();
+    const[pokeVal,setPokeVal]=useState({pokeName:"",url:"",id:""});
+    const params=useParams()
+    const userName =params.id;
+    const navigate = useNavigate();
+    //fetching pokemon
     const handleSearch=async()=>{
         try{
             const response= await axios.get(`https://pokeapi.co/api/v2/pokemon/${poke}`);
-            console.log(response.data)
             const imageUrl = response.data.sprites.front_default;
-            setPokeVal(imageUrl)
+            setPokeVal({...pokeVal,pokeName:response.data.name.toUpperCase(),url:imageUrl,id:response.data.id})
             setError("")
         }catch(err){
             setError("pokemon not found")
         }
-
     }
-   // const pokemonIndex = url.split('/')[url.split('/').length - 2];
-    //const imageUrl = `./sprites/pokemon/${pokemonIndex}.png`;
-    //const imageUrl = `https://github.com/PokeAPI/sprites/blob/master/sprites/pokemon/${pokemonIndex}.png?raw=true`;
-    useEffect(() => {
+    const addToFavourite=async()=>{
+        try{
+            const payload={data:pokeVal,email:user.email,token:user.token}
+            const response=await axios.post('/api/update',payload)
+            if(response.status===200){
+             setFavPokemon(favPokemon => [...favPokemon, pokeVal]);
+            }
+        }catch(err){
+            setError("Please login again")
+        }
+    }
+     useEffect(() => {
         const loggedInUser = localStorage.getItem("user");
         if (loggedInUser) {
           const foundUser = JSON.parse(loggedInUser);
           setUser(foundUser);
+          axios.post('/api/fetchFavPokemon',{email:foundUser.email})
+          .then((response)=>{
+            setFavPokemon(favPokemon => [...favPokemon, ...response.data]);
+          })
+          .catch((err)=>console.log(err))
         }
-      }, []);
+        else{
+            navigate('/')
+        }
+        
+      },[navigate]);
     return (
         <div>
-            <input type="text" value={poke} onChange={e=>setPoke(e.target.value)}></input>
-            <button onClick={handleSearch}>Submit</button>
-            <img src={pokeVal} alt="poekmon"></img>
+            <NavBar userName={userName}></NavBar>
+            <div className="wrapper">
+                <div className="label">FIND YOUR FAVOURITE POKEMON</div>
+                <div className="searchBar">
+                    <input id="searchQueryInput" type="text" name="searchQueryInput" placeholder="Search" value={poke} onChange={(e)=>{setPoke(e.target.value.toLowerCase()); setError("")}} />
+                    <button id="searchQuerySubmit" name="searchQuerySubmit" onClick={handleSearch}>
+                        
+                        <svg style={{width:"24px",height:"24px"}}  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
             {error!==""?<ErrorBox errorMessage={error}></ErrorBox>:null}
+            {pokeVal.pokeName!==""?
+            <div className="pokeSearchCard">
+                <img className="imgPoke" src={pokeVal.url} alt="poekmon"></img>
+                <div className="pokeSection">
+                <p className="PokeName">{pokeVal.pokeName}</p>
+                <button className="btnAddFav" onClick={addToFavourite}>
+                <img  style={{width:"36px",height:"36px"}} src={plusLogo} alt="+"></img>
+                </button>
+                </div>
+            </div>:null}
+
+            <h2>Fav Pokemon</h2>
+            <div className="FavColumn">
+                {favPokemon.length!==0?favPokemon.map((pokemon)=>{
+                    return(
+                        <FavpokeCard
+                            pokeName={pokemon.pokeName}
+                            url={pokemon.url}
+                            key={pokemon.id}
+                        />
+                    )
+                }):null}
+            </div>
         </div>
     )
 };

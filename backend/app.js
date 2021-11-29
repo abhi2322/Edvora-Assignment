@@ -48,8 +48,13 @@ app.post('/api/register',async(req,res)=>{
                   expiresIn:"2h",
               }
           );
-          user.token=token
-          res.status(201).json(user);
+          const userData={
+            first_name:user.first_name,
+            last_name:user.last_name,
+            email:user.email,
+            token:token
+          }
+          res.status(201).json(userData);
     }catch(err){
         console.log(err);
     }
@@ -76,7 +81,13 @@ app.post('/api/login',async(req,res)=>{
             }
           );
           user.token = token;
-          res.status(200).json(user);
+          const userData={
+            first_name:user.first_name,
+            last_name:user.last_name,
+            email:user.email,
+            token:token
+          }
+          res.status(200).json(userData);
         }else{
         res.status(400).send("Invalid Credentials");
         }
@@ -85,6 +96,38 @@ app.post('/api/login',async(req,res)=>{
       }
 
 });
+
+//For updating user data to add Fav pokemon
+app.post('/api/update',auth,(req,res)=>{
+    try{
+      const {data,email}=req.body;
+      User.collection.updateOne({email:email},
+        {
+          $push : {
+            favourite :{
+                  "pokeName":data.pokeName,
+                  "url":data.url,
+                  "id":data.id
+                }
+            }
+        });
+        res.status(200).send("Updated")
+    }
+    catch(err){
+      console.log(err);
+    }
+});
+
+//For fetching Fav pokemon
+app.post('/api/fetchFavPokemon',async(req,res)=>{
+  try{
+    const {email}=req.body;
+    const user = await User.findOne({email});
+    res.status(200).json(user.favourite);
+  }catch(err){
+      console.log(err);
+  }
+})
 
 
 

@@ -19,7 +19,7 @@ function LoginScreen() {
          .then(response=>{
                 if(response.status===200){
                     localStorage.setItem('user',JSON.stringify(response.data));
-                    navigate('/home');
+                    navigate(`/home/:${response.data.first_name}`);
                 }
          })
          .catch(err=>{

@@ -33,7 +33,7 @@ function SignupScreen(props) {
          .then(response=>{
                 if(response.status===201){
                     localStorage.setItem('user',JSON.stringify(response.data));
-                    navigate('/home');
+                    navigate(`/home/:${response.data.first_name}`);
                 }
          })
          .catch(err=>{
