@@ -27,6 +27,8 @@ function HomeScreen() {
             setError("pokemon not found")
         }
     }
+
+    //Adding pokemon to favourite list
     const addToFavourite=async()=>{
         try{
             const payload={data:pokeVal,email:user.email,token:user.token}
@@ -38,12 +40,34 @@ function HomeScreen() {
             setError("Please login again")
         }
     }
+
+    //removing pokemon from favourite List
+    const removeFromFavourite=async(id)=>{
+        console.log(id)
+        try{
+            const data=favPokemon.find((pokemon,index)=>{
+                if(pokemon.id===id){
+                    return true;
+                }
+                return false;
+            })
+            const payload={data:data,email:user.email,token:user.token}
+            const response=await axios.post('/api/removeFavpokemon',payload)
+            if(response.status===200){
+             setFavPokemon(favPokemon.filter((poke)=>{
+                 return poke.id!==id;
+             }));
+            }
+        }catch(err){
+            setError("Please login again")
+        }
+    }
      useEffect(() => {
         const loggedInUser = localStorage.getItem("user");
         if (loggedInUser) {
           const foundUser = JSON.parse(loggedInUser);
           setUser(foundUser);
-          axios.post('/api/fetchFavPokemon',{email:foundUser.email})
+          axios.post('/api/fetchFavPokemon',{email:foundUser.email,token:foundUser.token})
           .then((response)=>{
             setFavPokemon(favPokemon => [...favPokemon, ...response.data]);
           })
@@ -81,7 +105,7 @@ function HomeScreen() {
                 </div>
             </div>:null}
 
-            <h2>Fav Pokemon</h2>
+            <h2 className="subHeading">Favourite Pokemon</h2>
             <div className="FavColumn">
                 {favPokemon.length!==0?favPokemon.map((pokemon)=>{
                     return(
@@ -89,6 +113,8 @@ function HomeScreen() {
                             pokeName={pokemon.pokeName}
                             url={pokemon.url}
                             key={pokemon.id}
+                            id={pokemon.id}
+                            removePoke={(id)=>{removeFromFavourite(id)}}
                         />
                     )
                 }):null}

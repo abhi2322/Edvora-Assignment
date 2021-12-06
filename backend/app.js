@@ -119,7 +119,7 @@ app.post('/api/update',auth,(req,res)=>{
 });
 
 //For fetching Fav pokemon
-app.post('/api/fetchFavPokemon',async(req,res)=>{
+app.post('/api/fetchFavPokemon',auth,async(req,res)=>{
   try{
     const {email}=req.body;
     const user = await User.findOne({email});
@@ -127,8 +127,27 @@ app.post('/api/fetchFavPokemon',async(req,res)=>{
   }catch(err){
       console.log(err);
   }
-})
+});
 
-
+//For removing Fav pokemon
+app.post('/api/removeFavpokemon',auth,(req,res)=>{
+      console.log("in")
+      try{
+        const {data,email}=req.body;
+        User.collection.updateOne({email:email},
+          {
+            $pull : {
+              favourite :{
+                "pokeName":data.pokeName,
+                  "url":data.url,
+                  "id":data.id
+              }
+              }
+          });
+          res.status(200).send("Updated")
+      }catch(err){
+        console.log(err)
+      }
+});
 
 module.exports=app;
