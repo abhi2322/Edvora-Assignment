@@ -15,7 +15,7 @@ function LoginScreen() {
             return;
          }
          const payload={email:email,password:password}
-         axios.post('/api/login',payload)
+         axios.post('https://favpokemonapi.herokuapp.com/api/login',payload)
          .then(response=>{
                 if(response.status===200){
                     localStorage.setItem('user',JSON.stringify(response.data));
