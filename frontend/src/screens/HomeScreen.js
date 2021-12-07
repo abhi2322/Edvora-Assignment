@@ -32,7 +32,7 @@ function HomeScreen() {
     const addToFavourite=async()=>{
         try{
             const payload={data:pokeVal,email:user.email,token:user.token}
-            const response=await axios.post('https://favpokemonapi.herokuapp.com/api/update',payload)
+            const response=await axios.post('/api/update',payload)
             if(response.status===200){
              setFavPokemon(favPokemon => [...favPokemon, pokeVal]);
             }
