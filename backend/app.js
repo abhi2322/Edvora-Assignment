@@ -6,6 +6,8 @@ const auth = require("./middleware/auth");
 const express=require('express');
 const User=require('./model/user');
 const app=express();
+const cors = require("cors");
+app.use(cors({origin: true}));
 
 app.use(express.json());
 app.get('/',(req,res)=>{
