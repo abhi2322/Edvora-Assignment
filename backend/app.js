@@ -4,7 +4,7 @@ const jwt= require('jsonwebtoken')
 require('./config/database').connect();
 const auth = require("./middleware/auth");
 const express=require('express');
-import User from './model/user';
+const User=require('./model/user');
 const app=express();
 
 app.use(express.json());
