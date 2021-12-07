@@ -28,8 +28,16 @@ function HomeScreen() {
         }
     }
 
+   const handleCheck=(val)=>{
+        return  favPokemon.some(item => val === item.id);
+       }
+
     //Adding pokemon to favourite list
     const addToFavourite=async()=>{
+        if(handleCheck(pokeVal.id)){
+            setError('Already in Favourite List')
+            return;
+        }
         try{
             const payload={data:pokeVal,email:user.email,token:user.token}
             const response=await axios.post('/api/update',payload)
